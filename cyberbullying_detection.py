@@ -6,12 +6,12 @@ from firebase_admin import credentials, firestore
 
 # ✅ Load Firebase
 if not firebase_admin._apps:
-    cred = credentials.Certificate("C:\\Users\\Anjali Kalarikkal\\Documents\\GSC\\firebase_key.json")
+    cred = credentials.Certificate("firebase_key.json")
     firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 # ✅ Load the trained model once
-model_path = 'C:\\Users\\Anjali Kalarikkal\\Documents\\GSC\\final_working\\cyberbullying_model.pkl'
+model_path = 'cyberbullying_model.pkl'
 pipe = joblib.load(model_path)
 
 # ✅ Hardcoded Perspective API Key
