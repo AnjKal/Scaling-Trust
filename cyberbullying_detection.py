@@ -5,10 +5,10 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 
 # ✅ Load Firebase
-if not firebase_admin._apps:
-    cred = credentials.Certificate("firebase_key.json")
-    firebase_admin.initialize_app(cred)
-db = firestore.client()
+# if not firebase_admin._apps:
+#     cred = credentials.Certificate("firebase_key.json")
+#     firebase_admin.initialize_app(cred)
+# db = firestore.client()
 
 # ✅ Load the trained model once
 model_path = 'cyberbullying_model.pkl'
@@ -39,18 +39,18 @@ def handle_toxicity(text, toxicity_score, cyberbullying_type):
     if toxicity_score > 6:
         return f"🚫 **Post Blocked:** Contains excessive toxicity! ({cyberbullying_type})", "red"
     elif 4 < toxicity_score <= 6:
-        db.collection("flagged_posts").add({
-            "post": text,
-            "toxicity_score": toxicity_score,
-            "cyberbullying_type": cyberbullying_type
-        })
+        # db.collection("flagged_posts").add({
+        #     "post": text,
+        #     "toxicity_score": toxicity_score,
+        #     "cyberbullying_type": cyberbullying_type
+        # })
         return f"⚠️ **Post Flagged:** This may need review. ({cyberbullying_type})", "orange"
     else:
-        db.collection("approved_posts").add({
-            "post": text,
-            "toxicity_score": toxicity_score,
-            "cyberbullying_type": cyberbullying_type
-        })
+        # db.collection("approved_posts").add({
+        #     "post": text,
+        #     "toxicity_score": toxicity_score,
+        #     "cyberbullying_type": cyberbullying_type
+        # })
         return f"✅ **Post Approved & Saved to Firebase.** ({cyberbullying_type})", "green"
 
 # ✅ Streamlit UI
