@@ -3,7 +3,10 @@ import streamlit as st
 import requests
 import firebase_admin
 from firebase_admin import credentials, firestore
+import google.generativeai as genai
 
+GOOGLE_GENAI_API_KEY = "AIzaSyAMB5wU-VRF-ynl-UIqGMrd0BJnIhtm1tM"  # Replace with your API Key
+genai.configure(api_key=GOOGLE_GENAI_API_KEY)
 # ✅ Load Firebase
 # if not firebase_admin._apps:
 #     cred = credentials.Certificate("firebase_key.json")
@@ -34,17 +37,32 @@ def classify_cyberbullying(text):
     prediction = pipe.predict([text])
     return prediction[0]
 
+def rewrite_post(text):
+    """ Uses Google's GenAI (Gemini API) to rewrite a flagged post in a neutral/positive tone. """
+    model = genai.GenerativeModel("gemini-2.0-flash")
+    prompt = f"""
+    The following text may contain offensive or inappropriate content:
+
+    "{text}"
+
+    Please rewrite it in a more positive, neutral, and respectful tone while maintaining its original intent.
+    """
+    response = model.generate_content(prompt)
+    return response.text.strip()
+
 # ✅ Function to handle the post
 def handle_toxicity(text, toxicity_score, cyberbullying_type):
     if toxicity_score > 6:
-        return f"🚫 **Post Blocked:** Contains excessive toxicity! ({cyberbullying_type})", "red"
+        rewritten_text = rewrite_post(text)
+        return f"🚫 **Post Blocked:** Contains excessive toxicity! ({cyberbullying_type}) \n**New Version:** {rewritten_text}", "red"
     elif 4 < toxicity_score <= 6:
         # db.collection("flagged_posts").add({
         #     "post": text,
         #     "toxicity_score": toxicity_score,
         #     "cyberbullying_type": cyberbullying_type
         # })
-        return f"⚠️ **Post Flagged:** This may need review. ({cyberbullying_type})", "orange"
+        rewritten_text = rewrite_post(text)
+        return f"⚠️ **Post Flagged:** This may need review. ({cyberbullying_type}) \n**New Version:** {rewritten_text}", "orange"
     else:
         # db.collection("approved_posts").add({
         #     "post": text,
