@@ -4,6 +4,7 @@ import requests
 import firebase_admin
 from firebase_admin import credentials, firestore
 import google.generativeai as genai
+import gdown
 
 GOOGLE_GENAI_API_KEY = "AIzaSyAMB5wU-VRF-ynl-UIqGMrd0BJnIhtm1tM"  # Replace with your API Key
 genai.configure(api_key=GOOGLE_GENAI_API_KEY)
@@ -14,7 +15,15 @@ genai.configure(api_key=GOOGLE_GENAI_API_KEY)
 # db = firestore.client()
 
 # ✅ Load the trained model once
-model_path = 'cyberbullying_model.pkl'
+# model_path = 'cyberbullying_model.pkl'
+# pipe = joblib.load(model_path)
+model_path = "cyberbullying_model.pkl"
+
+if not os.path.exists(model_path):
+    file_id = "1rWRDK_cRLtn0Vt7XHaFp-X9lOdzQawJK"  # Your actual Google Drive file ID
+    url = f"https://drive.google.com/uc?id={file_id}"
+    gdown.download(url, model_path, quiet=False)
+
 pipe = joblib.load(model_path)
 
 # ✅ Hardcoded Perspective API Key
