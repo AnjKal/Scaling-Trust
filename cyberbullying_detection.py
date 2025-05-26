@@ -5,6 +5,7 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 import google.generativeai as genai
 import gdown
+import os
 
 GOOGLE_GENAI_API_KEY = "AIzaSyAMB5wU-VRF-ynl-UIqGMrd0BJnIhtm1tM"  # Replace with your API Key
 genai.configure(api_key=GOOGLE_GENAI_API_KEY)
